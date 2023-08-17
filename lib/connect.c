@@ -227,14 +227,12 @@ static int mosquitto__reconnect(struct mosquitto *mosq, bool blocking)
 	}
 }
 
-
-int mosquitto_disconnect(struct mosquitto *mosq)
-{
+// 用于断开连接
+int mosquitto_disconnect(struct mosquitto *mosq) {
 	return mosquitto_disconnect_v5(mosq, 0, NULL);
 }
 
-int mosquitto_disconnect_v5(struct mosquitto *mosq, int reason_code, const mosquitto_property *properties)
-{
+int mosquitto_disconnect_v5(struct mosquitto *mosq, int reason_code, const mosquitto_property *properties) {
 	const mosquitto_property *outgoing_properties = NULL;
 	mosquitto_property local_property;
 	int rc;
@@ -242,10 +240,10 @@ int mosquitto_disconnect_v5(struct mosquitto *mosq, int reason_code, const mosqu
 	if(mosq->protocol != mosq_p_mqtt5 && properties) return MOSQ_ERR_NOT_SUPPORTED;
 	if(reason_code < 0 || reason_code > UINT8_MAX) return MOSQ_ERR_INVAL;
 
-	if(properties){
-		if(properties->client_generated){
+	if (properties) {
+		if (properties->client_generated) {
 			outgoing_properties = properties;
-		}else{
+		} else {
 			memcpy(&local_property, properties, sizeof(mosquitto_property));
 			local_property.client_generated = true;
 			local_property.next = NULL;

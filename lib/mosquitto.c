@@ -52,8 +52,7 @@ int mosquitto_lib_version(int *major, int *minor, int *revision)
 	return LIBMOSQUITTO_VERSION_NUMBER;
 }
 
-int mosquitto_lib_init(void)
-{
+int mosquitto_lib_init(void) {
 	int rc;
 
 	if (init_refcount == 0) {
@@ -99,18 +98,17 @@ int mosquitto_lib_cleanup(void)
 	return MOSQ_ERR_SUCCESS;
 }
 
-struct mosquitto *mosquitto_new(const char *id, bool clean_start, void *userdata)
-{
+struct mosquitto *mosquitto_new(const char *id, bool clean_start, void *userdata) {
 	struct mosquitto *mosq = NULL;
 	int rc;
 
-	if(clean_start == false && id == NULL){
+	if (clean_start == false && id == NULL) {
 		errno = EINVAL;
 		return NULL;
 	}
 
 	mosq = (struct mosquitto *)mosquitto__calloc(1, sizeof(struct mosquitto));
-	if(mosq){
+	if (mosq) {
 		mosq->sock = INVALID_SOCKET;
 #ifdef WITH_THREADING
 		mosq->thread_id = pthread_self();
@@ -118,7 +116,7 @@ struct mosquitto *mosquitto_new(const char *id, bool clean_start, void *userdata
 		mosq->sockpairR = INVALID_SOCKET;
 		mosq->sockpairW = INVALID_SOCKET;
 		rc = mosquitto_reinitialise(mosq, id, clean_start, userdata);
-		if(rc){
+		if (rc) {
 			mosquitto_destroy(mosq);
 			if(rc == MOSQ_ERR_INVAL){
 				errno = EINVAL;
@@ -133,20 +131,20 @@ struct mosquitto *mosquitto_new(const char *id, bool clean_start, void *userdata
 	return mosq;
 }
 
-int mosquitto_reinitialise(struct mosquitto *mosq, const char *id, bool clean_start, void *userdata)
-{
-	if(!mosq) return MOSQ_ERR_INVAL;
+// 负责将 mosq 的其他成员初始化
+int mosquitto_reinitialise(struct mosquitto *mosq, const char *id, bool clean_start, void *userdata) {
+	if (!mosq) return MOSQ_ERR_INVAL;
 
-	if(clean_start == false && id == NULL){
+	if (clean_start == false && id == NULL) {
 		return MOSQ_ERR_INVAL;
 	}
 
 	mosquitto__destroy(mosq);
 	memset(mosq, 0, sizeof(struct mosquitto));
 
-	if(userdata){
+	if (userdata) {
 		mosq->userdata = userdata;
-	}else{
+	} else {
 		mosq->userdata = mosq;
 	}
 	mosq->protocol = mosq_p_mqtt311;
@@ -155,15 +153,15 @@ int mosquitto_reinitialise(struct mosquitto *mosq, const char *id, bool clean_st
 	mosq->sockpairW = INVALID_SOCKET;
 	mosq->keepalive = 60;
 	mosq->clean_start = clean_start;
-	if(id){
-		if(STREMPTY(id)){
+	if (id) {
+		if (STREMPTY(id)) {
 			return MOSQ_ERR_INVAL;
 		}
-		if(mosquitto_validate_utf8(id, (int)strlen(id))){
+		if (mosquitto_validate_utf8(id, (int)strlen(id))) {
 			return MOSQ_ERR_MALFORMED_UTF8;
 		}
 		mosq->id = mosquitto__strdup(id);
-		if(!mosq->id){
+		if (!mosq->id) {
 			return MOSQ_ERR_NOMEM;
 		}
 	}
@@ -226,9 +224,8 @@ int mosquitto_reinitialise(struct mosquitto *mosq, const char *id, bool clean_st
 	return MOSQ_ERR_SUCCESS;
 }
 
-
-void mosquitto__destroy(struct mosquitto *mosq)
-{
+// 析构 mosq 结构体
+void mosquitto__destroy(struct mosquitto *mosq) {
 	if(!mosq) return;
 
 #ifdef WITH_THREADING
@@ -312,12 +309,11 @@ void mosquitto__destroy(struct mosquitto *mosq)
 	}
 }
 
-void mosquitto_destroy(struct mosquitto *mosq)
-{
+void mosquitto_destroy(struct mosquitto *mosq) {
 	if(!mosq) return;
 
-	mosquitto__destroy(mosq);
-	mosquitto__free(mosq);
+	mosquitto__destroy(mosq); // 析构
+	mosquitto__free(mosq); // 释放
 }
 
 int mosquitto_socket(struct mosquitto *mosq)

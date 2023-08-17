@@ -1055,8 +1055,8 @@ int net__socket_nonblock(mosq_sock_t *sock)
 
 
 #ifndef WITH_BROKER
-int net__socketpair(mosq_sock_t *pairR, mosq_sock_t *pairW)
-{
+// 创建两个互相通信的 socket 并且设置为非阻塞状态
+int net__socketpair(mosq_sock_t *pairR, mosq_sock_t *pairW) {
 #ifdef WIN32
 	int family[2] = {AF_INET, AF_INET6};
 	int i;
@@ -1167,7 +1167,7 @@ int net__socketpair(mosq_sock_t *pairR, mosq_sock_t *pairW)
 	*pairR = INVALID_SOCKET;
 	*pairW = INVALID_SOCKET;
 
-	if(socketpair(AF_UNIX, SOCK_STREAM, 0, sv) == -1){
+	if (socketpair(AF_UNIX, SOCK_STREAM, 0, sv) == -1) {
 		return MOSQ_ERR_ERRNO;
 	}
 	if(net__socket_nonblock(&sv[0])){

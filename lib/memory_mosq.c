@@ -47,8 +47,8 @@ void memory__set_limit(size_t lim)
 }
 #endif
 
-void *mosquitto__calloc(size_t nmemb, size_t size)
-{
+// 用于给 mosq 分配内存，分配 nmemb 个 size 的内存，返回分配的内存地址
+void *mosquitto__calloc(size_t nmemb, size_t size) {
 	void *mem;
 #ifdef REAL_WITH_MEMORY_TRACKING
 	if(mem_limit && memcount + size > mem_limit){
@@ -69,8 +69,8 @@ void *mosquitto__calloc(size_t nmemb, size_t size)
 	return mem;
 }
 
-void mosquitto__free(void *mem)
-{
+// 释放 mem
+void mosquitto__free(void *mem) {
 #ifdef REAL_WITH_MEMORY_TRACKING
 	if(!mem){
 		return;

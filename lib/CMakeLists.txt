@@ -1,4 +1,4 @@
-option(WITH_LIB_CPP "Build C++ library?" ON)
+option(WITH_LIB_CPP "Build C++ library?" OFF)
 if (WITH_LIB_CPP)
 	add_subdirectory(cpp)
 endif (WITH_LIB_CPP)

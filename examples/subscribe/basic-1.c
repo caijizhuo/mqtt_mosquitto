@@ -11,8 +11,7 @@
 
 
 /* Callback called when the client receives a CONNACK message from the broker. */
-void on_connect(struct mosquitto *mosq, void *obj, int reason_code)
-{
+void on_connect(struct mosquitto *mosq, void *obj, int reason_code) {
 	int rc;
 	/* Print out the connection result. mosquitto_connack_string() produces an
 	 * appropriate string for MQTT v3.x clients, the equivalent for MQTT v5.0
@@ -30,7 +29,7 @@ void on_connect(struct mosquitto *mosq, void *obj, int reason_code)
 	 * connection drops and is automatically resumed by the client, then the
 	 * subscriptions will be recreated when the client reconnects. */
 	rc = mosquitto_subscribe(mosq, NULL, "example/temperature", 1);
-	if(rc != MOSQ_ERR_SUCCESS){
+	if (rc != MOSQ_ERR_SUCCESS) {
 		fprintf(stderr, "Error subscribing: %s\n", mosquitto_strerror(rc));
 		/* We might as well disconnect if we were unable to subscribe */
 		mosquitto_disconnect(mosq);
@@ -70,8 +69,7 @@ void on_message(struct mosquitto *mosq, void *obj, const struct mosquitto_messag
 }
 
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
 	struct mosquitto *mosq;
 	int rc;
 
@@ -84,7 +82,7 @@ int main(int argc, char *argv[])
 	 * obj = NULL -> we aren't passing any of our private data for callbacks
 	 */
 	mosq = mosquitto_new(NULL, true, NULL);
-	if(mosq == NULL){
+	if (mosq == NULL) {
 		fprintf(stderr, "Error: Out of memory.\n");
 		return 1;
 	}
